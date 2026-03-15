@@ -73,7 +73,7 @@ fever, cough, headache, body_pain
 ```
 
 ## 👥 Developers
-Educational project developed at **Tiaret University** for **OSSY** and **Meriom** programs.
+Educational project Only.
 
 ## ⚠️ Important Disclaimer
 > **Warning**: This system is for **educational purposes only**. Not intended to replace professional medical advice. Always consult healthcare providers for medical decisions.
