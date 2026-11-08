@@ -19,9 +19,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -r requirements-dev.txt
       - name: Smoke test (import app)
         run: |
           python -c "import main; print('OK: app imported')"
       - name: Health check test
         run: |
           python -c "from main import app; c=app.test_client(); r=c.get('/health'); print(r.status_code, r.json); assert r.status_code==200"
+      - name: Unit tests
+        run: |
+          python -m pytest tests/ -q

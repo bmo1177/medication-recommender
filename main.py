@@ -131,35 +131,40 @@ class DiseaseKnowledgeBase:
                 self.severity_map[str(row["Symptom"]).strip()] = float(row["weight"])
 
         # Index by disease name — O(1) at request time.
-        self._desc: Dict[str, str] = dict(
-            zip(desc_df["Disease"].astype(str), desc_df["Description"].astype(str))
-        )
+        # Bug fix: diseases_list has trailing-space entries ('Diabetes ', 'Hypertension ')
+        # while CSVs use clean names — strip keys + lookups so recs always resolve.
+        self._desc: Dict[str, str] = {
+            str(k).strip(): str(v) for k, v in zip(desc_df["Disease"], desc_df["Description"])
+        }
         self._meds: Dict[str, List[str]] = {
-            str(k): _parse_list_cell(v) for k, v in zip(med_df["Disease"], med_df["Medication"])
+            str(k).strip(): _parse_list_cell(v) for k, v in zip(med_df["Disease"], med_df["Medication"])
         }
         self._diets: Dict[str, List[str]] = {
-            str(k): _parse_list_cell(v) for k, v in zip(diet_df["Disease"], diet_df["Diet"])
+            str(k).strip(): _parse_list_cell(v) for k, v in zip(diet_df["Disease"], diet_df["Diet"])
         }
         pre_cols = ["Precaution_1", "Precaution_2", "Precaution_3", "Precaution_4"]
         self._pre: Dict[str, List[str]] = {
-            str(row["Disease"]): [str(row[c]) for c in pre_cols if pd.notna(row[c]) and str(row[c]).strip()]
+            str(row["Disease"]).strip(): [
+                str(row[c]) for c in pre_cols if pd.notna(row[c]) and str(row[c]).strip()
+            ]
             for _, row in pre_df.iterrows()
         }
         # workout has 10 rows per disease
         wkey = "disease" if "disease" in work_df.columns else "Disease"
         grouped: Dict[str, List[str]] = {}
         for disease, workout in zip(work_df[wkey].astype(str), work_df["workout"].astype(str)):
-            grouped.setdefault(disease, []).append(workout.strip())
+            grouped.setdefault(disease.strip(), []).append(workout.strip())
         self._workouts: Dict[str, List[str]] = grouped
 
     def details(self, disease: str) -> Tuple[str, List[str], List[str], List[str], List[str]]:
         """Return (description, precautions, medications, diets, workouts). Never raises."""
+        key = str(disease).strip()
         return (
-            self._desc.get(disease, ""),
-            list(self._pre.get(disease, [])),
-            list(self._meds.get(disease, [])),
-            list(self._diets.get(disease, [])),
-            list(self._workouts.get(disease, [])),
+            self._desc.get(key, ""),
+            list(self._pre.get(key, [])),
+            list(self._meds.get(key, [])),
+            list(self._diets.get(key, [])),
+            list(self._workouts.get(key, [])),
         )
 
     def severity_score(self, symptoms: Sequence[str]) -> int:

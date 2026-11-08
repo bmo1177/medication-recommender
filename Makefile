@@ -44,10 +44,15 @@ run:  ## Run app locally (PORT defaults to 5000)
 dev:  ## Run with DEBUG=true
 	DEBUG=true $(VENV_PY) main.py
 
-test:  ## Smoke test: import + health endpoint
+test:  ## Smoke test + pytest suite
 	$(VENV_PY) -c "import main; print('OK: app imported')"
 	$(VENV_PY) -c "from main import app; c=app.test_client(); r=c.get('/health'); print(r.status_code, r.json); assert r.status_code==200"
-	@echo "Smoke test passed."
+	@if [ -x "$(VENV_PY)" ] && $(VENV_PY) -c "import pytest" 2>/dev/null; then \
+		$(VENV_PY) -m pytest tests/ -q; \
+	else \
+		echo "pytest not installed (pip install -r requirements-dev.txt) — smoke only."; \
+	fi
+	@echo "Tests passed."
 
 check: test  ## Alias for test
 
