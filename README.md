@@ -116,49 +116,51 @@ User symptoms  →  normalize (lowercase, _-separated, strip)
 
 ## 🚀 Quick Start
 
+> **Local-first:** your laptop is the server — no cloud account, no card, no Docker required. Full guide: **[LOCAL_SETUP.md](./LOCAL_SETUP.md)**
+
 ### Prerequisites
 
-- Python 3.11+ (3.12 also works locally) and `pip`
-- Or Docker (no local Python needed)
+- Python 3.11+ (3.12 works) — or Docker (no local Python)
 
-### 1. Clone & install
+### 30 seconds to running app
 
 ```bash
 git clone https://github.com/bmo1177/medication-recommender.git
 cd medication-recommender
-
-python3 -m venv venv
-# Windows:  venv\Scripts\activate
-# macOS/Linux:  source venv/bin/activate
-
-pip install -r requirements.txt
-```
-
-### 2. Run locally
-
-```bash
-python main.py
+make install
+make run
 ```
 
 Open **http://127.0.0.1:5000** — health check at **http://127.0.0.1:5000/health**.
 
-Production-like (Gunicorn):
+No `make`? One-script alternative (does venv + install + smoke test + run):
+
+```bash
+./scripts/bootstrap.sh
+```
+
+Docker alternative:
+
+```bash
+docker compose up --build   # or: make docker
+# open http://localhost:5000
+```
+
+Manual (Windows / no make):
+
+```bash
+python3 -m venv venv
+# Windows:  venv\Scripts\activate
+# macOS/Linux:  source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
+
+Production-like (Gunicorn) / custom port:
 
 ```bash
 gunicorn main:app --bind 0.0.0.0:5000 --workers 2 --timeout 120
-```
-
-Custom port:
-
-```bash
 PORT=8080 python main.py
-```
-
-### 3. Docker
-
-```bash
-docker build -t medication-recommender .
-docker run -e PORT=5000 -p 5000:5000 medication-recommender
 ```
 
 ---
