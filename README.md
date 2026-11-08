@@ -68,13 +68,17 @@ itching, skin_rash, burning_micturition
 
 | Homepage | Prediction result |
 |---|---|
-| ![Homepage](screenshots/screencapture-127-0-0-1-5000-2025-06-09-05_36_49.png) | ![Prediction](screenshots/screencapture-127-0-0-1-5000-predict-2025-06-09-05_37_17.png) |
+| ![Homepage](screenshots/home.png) | ![Prediction — Diabetes, severity 14](screenshots/prediction.png) |
 
 | About | Blog |
 |---|---|
-| ![About](screenshots/screencapture-127-0-0-1-5000-about-2025-06-09-05_40_36.png) | ![Blog](screenshots/screencapture-127-0-0-1-5000-blog-2025-06-09-05_45_15.png) |
+| ![About](screenshots/about.png) | ![Blog](screenshots/blog.png) |
 
-> More screenshots are in [`screenshots/`](./screenshots).
+| Contact | Developer |
+|---|---|
+| ![Contact](screenshots/contact.png) | ![Developer](screenshots/developer.png) |
+
+> Prediction demo: `fatigue, weight_loss, restlessness, lethargy` → **Diabetes** (severity 14). Captured 2026-11-08 from the redesigned UI (`home.png` 1280×1000, `prediction.png` 1280×1800).
 
 ---
 
