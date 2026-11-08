@@ -1,568 +1,220 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Health Care Center | AI-Powered Medical Recommendations</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --info-color: #3498db;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 12px 0;
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--secondary-color) !important;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-            border: 2px solid var(--secondary-color);
-        }
-        
-        .nav-link {
-            font-weight: 500;
-            margin: 0 5px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--secondary-color);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover:after, .nav-link.active:after {
-            width: 100%;
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 60px 0;
-            border-radius: 0 0 50px 50px;
-            margin-bottom: 40px;
-        }
-        
-        .hero-title {
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .hero-subtitle {
-            font-weight: 300;
-            margin-bottom: 30px;
-            font-size: 1.2rem;
-        }
-        
-        .input-form {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        .form-control {
-            border-radius: 10px;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
-            border-color: var(--secondary-color);
-        }
-        
-        .btn-speech {
-            background-color: var(--info-color);
-            color: white;
-            border-radius: 10px;
-            padding: 10px 20px;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-speech:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-        
-        .btn-predict {
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 10px;
-            padding: 15px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            border: none;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-predict:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
-        }
-        
-        #transcription {
-            padding: 10px;
-            min-height: 40px;
-            margin-top: 10px;
-            font-style: italic;
-            color: var(--secondary-color);
-        }
-        
-        .results-section {
-            margin-top: 50px;
-        }
-        
-        .results-title {
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .results-title:after {
-            content: '';
-            position: absolute;
-            width: 100px;
-            height: 3px;
-            background-color: var(--secondary-color);
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        .result-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .result-button {
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            min-width: 160px;
-            justify-content: center;
-        }
-        
-        .result-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-disease {
-            background-color: #F39334;
-            color: white;
-        }
-        
-        .btn-description {
-            background-color: #268AF3;
-            color: white;
-        }
-        
-        .btn-precaution {
-            background-color: #F371F9;
-            color: white;
-        }
-        
-        .btn-medications {
-            background-color: #F8576F;
-            color: white;
-        }
-        
-        .btn-workouts {
-            background-color: #99F741;
-            color: black;
-        }
-        
-        .btn-diets {
-            background-color: #E5E23D;
-            color: black;
-        }
-        
-        .modal-content {
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .modal-header {
-            background-color: var(--primary-color);
-            color: white;
-            border-bottom: none;
-            padding: 20px 25px;
-        }
-        
-        .modal-body {
-            padding: 25px;
-            font-size: 1.1rem;
-        }
-        
-        .modal-body ul {
-            padding-left: 20px;
-        }
-        
-        .modal-body li {
-            margin-bottom: 10px;
-        }
-        
-        .footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 30px 0;
-            margin-top: 60px;
-            text-align: center;
-        }
-        
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 40px 0;
-                border-radius: 0 0 30px 30px;
-            }
-            
-            .hero-title {
-                font-size: 2rem;
-            }
-            
-            .result-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .result-button {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img class="logo-img" src="{{ url_for('static', filename='img.png') }}" alt="Health Center Logo">
-                Health Center
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+{% extends "base.html" %}
+{% block title %}Home | Health Center{% endblock %}
+{% block head %}{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-section">
+  <div class="container text-center">
+    <h1 class="hero-title">AI-Powered Health Recommendations</h1>
+    <p class="hero-subtitle">Enter your symptoms and get education on precautions, diet, workouts and medications — instantly.</p>
+    <div class="steps-row" aria-label="How it works">
+      <div class="step-card"><strong>1 · Enter symptoms</strong><span>Comma-separated, e.g. <code>itching, cough</code></span></div>
+      <div class="step-card"><strong>2 · AI prediction</strong><span>SVC model (132 symptoms → 41 diseases)</span></div>
+      <div class="step-card"><strong>3 · Explore guidance</strong><span>Precautions, diet, workouts &amp; medications</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+
+      <div class="input-form">
+        <h2 class="h5 fw-semibold mb-3"><i class="fas fa-stethoscope me-2" aria-hidden="true"></i>Check your symptoms</h2>
+
+        {% if message %}
+        <div class="alert alert-warning-custom" role="status">
+          <i class="fas fa-circle-info me-2" aria-hidden="true"></i>{{ message }}
+        </div>
+        {% endif %}
+
+        <form id="predict-form" action="/predict" method="post" novalidate aria-describedby="symptoms-help symptoms-error">
+          <div class="mb-3">
+            <label for="symptoms" class="form-label">What symptoms are you experiencing?</label>
+            <div class="field-row">
+              <div class="grow">
+                <input type="text" class="form-control" id="symptoms" name="symptoms"
+                       placeholder="e.g. itching, cough, high_fever"
+                       value="{{ user_input or '' }}"
+                       autocomplete="off" required aria-describedby="symptoms-help symptoms-error"
+                       list="symptom-list" />
+                <datalist id="symptom-list">
+                  {% for s in symptoms_list or [] %}
+                  <option value="{{ s }}">{{ s }}</option>
+                  {% endfor %}
+                </datalist>
+                <p id="symptoms-error" class="hint hint-error mt-2" role="alert" aria-live="polite"></p>
+                <p id="symptoms-help" class="hint">Separate symptoms with commas. Tap a chip below to add one. Tip: try <code>fatigue, weight_loss, restlessness, lethargy</code>.</p>
+
+                <div class="chips" aria-label="Example symptoms — click to add">
+                  <button type="button" class="chip" data-symptom-chip="itching">itching</button>
+                  <button type="button" class="chip" data-symptom-chip="cough">cough</button>
+                  <button type="button" class="chip" data-symptom-chip="high_fever">high_fever</button>
+                  <button type="button" class="chip" data-symptom-chip="headache">headache</button>
+                  <button type="button" class="chip" data-symptom-chip="fatigue">fatigue</button>
+                  <button type="button" class="chip" data-symptom-chip="chills">chills</button>
+                  <button type="button" class="chip" data-symptom-chip="breathlessness">breathlessness</button>
+                  <button type="button" class="chip" data-symptom-chip="stomach_pain">stomach_pain</button>
+                </div>
+              </div>
+              <button type="button" id="clear-btn" class="icon-btn" title="Clear input" aria-label="Clear symptoms input">
+                <i class="fas fa-xmark" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+            <button type="button" id="startSpeechRecognition" class="btn-speech" aria-pressed="false">
+              <i class="fas fa-microphone" aria-hidden="true"></i> Speak Your Symptoms
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contact">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/developer">Developer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/blog">Blog</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+            <span id="transcription" class="text-muted fst-italic" aria-live="polite"></span>
+            <span id="speech-status" class="visually-hidden" role="status"></span>
+          </div>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container text-center">
-            <h1 class="hero-title">AI-Powered Health Recommendations</h1>
-            <p class="hero-subtitle">Enter your symptoms and get personalized medical advice, precautions, and treatment options</p>
-        </div>
-    </section>
+          <button type="submit" id="submit-btn" class="btn-predict">
+            <i class="fas fa-stethoscope me-2" aria-hidden="true"></i>Get Recommendations
+          </button>
+          <p class="hint text-center mb-0 mt-2">Your input also supports voice dictation on Chrome. Nothing is stored.</p>
+        </form>
+      </div>
 
-    <!-- Main Form Section -->
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="input-form">
-                    <form action="/predict" method="post">
-                        <div class="mb-4">
-                            <label for="symptoms" class="form-label">What symptoms are you experiencing?</label>
-                            <input type="text" class="form-control" id="symptoms" name="symptoms" placeholder="Enter symptoms (e.g., itching, skin_rash, headache)">
-                            <div class="form-text text-muted">Separate multiple symptoms with commas</div>
-                        </div>
-                        
-                        <div class="d-flex align-items-center mb-4">
-                            <button type="button" id="startSpeechRecognition" class="btn-speech">
-                                <i class="fas fa-microphone"></i> Speak Your Symptoms
-                            </button>
-                            <div id="transcription" class="ms-3"></div>
-                        </div>
-                        
-                        {% if message %}
-                        <div class="alert alert-info">
-                            {{ message }}
-                        </div>
-                        {% endif %}
-                        
-                        <button type="submit" class="btn-predict">
-                            <i class="fas fa-stethoscope me-2"></i> Get Medical Recommendations
-                        </button>
-                    </form>
-                </div>
+      {% if predicted_disease %}
+      <!-- Results -->
+      <section class="results-section" aria-labelledby="results-heading">
+        <h2 id="results-heading" class="results-title">Your Health Analysis Results</h2>
+
+        <div class="result-summary">
+          <div class="result-banner" role="status">
+            <p class="mb-1 text-muted small text-uppercase fw-semibold">Predicted disease (educational)</p>
+            <p class="h4 fw-bold mb-1">{{ predicted_disease }}</p>
+            <p class="text-muted mb-0">This is an AI-generated prediction from the symptoms you provided. Please consult a healthcare professional for a proper diagnosis.</p>
+            <div class="result-metrics">
+              <div class="metric"><small>Severity score</small><strong>{{ severity_score }}</strong></div>
+              <div class="metric"><small>Model confidence</small><strong>{{ (confidence * 100)|int if confidence is defined else '—' }}%</strong><small class="text-normal">SVC fixed — retrain for probabilities</small></div>
+              <div class="metric"><small>Recognized symptoms</small><strong>{{ user_input.split(',')|length if user_input else '—' }}</strong><small class="text-normal">from your input</small></div>
             </div>
+          </div>
         </div>
+
+        <div class="result-buttons" role="group" aria-label="Details">
+          <button class="result-button btn-disease" data-bs-toggle="modal" data-bs-target="#diseaseModal">
+            <i class="fas fa-virus" aria-hidden="true"></i> Disease
+          </button>
+          <button class="result-button btn-description" data-bs-toggle="modal" data-bs-target="#descriptionModal">
+            <i class="fas fa-info-circle" aria-hidden="true"></i> Description
+          </button>
+          <button class="result-button btn-precaution" data-bs-toggle="modal" data-bs-target="#precautionModal">
+            <i class="fas fa-shield-halved" aria-hidden="true"></i> Precaution
+          </button>
+          <button class="result-button btn-medications" data-bs-toggle="modal" data-bs-target="#medicationsModal">
+            <i class="fas fa-pills" aria-hidden="true"></i> Medications
+          </button>
+          <button class="result-button btn-workouts" data-bs-toggle="modal" data-bs-target="#workoutsModal">
+            <i class="fas fa-person-running" aria-hidden="true"></i> Workouts
+          </button>
+          <button class="result-button btn-diets" data-bs-toggle="modal" data-bs-target="#dietsModal">
+            <i class="fas fa-apple-whole" aria-hidden="true"></i> Diets
+          </button>
+        </div>
+      </section>
+      {% else %}
+      <!-- Empty state: how it works -->
+      <div class="page-card mt-4">
+        <h3 class="h5">How the demo works</h3>
+        <ol class="mb-0 ps-3">
+          <li>Your symptoms are encoded as a 132-length binary vector (132 known symptoms).</li>
+          <li>The SVC model (`models/svc.pkl`) predicts one of 41 diseases.</li>
+          <li>We look up description, medications, precautions, diet and workouts from `datasets/*.csv`.</li>
+        </ol>
+        <p class="small text-muted mt-2 mb-0">Try a sample: <code>itching, skin_rash, burning_micturition</code> — full samples in <code>tests.txt</code>.</p>
+      </div>
+      {% endif %}
+
     </div>
+  </div>
+</div>
 
-    {% if predicted_disease %}
-    <!-- Results Section -->
-    <section class="results-section">
-        <div class="container">
-            <h2 class="results-title">Your Health Analysis Results</h2>
-            
-            <div class="result-buttons">
-                <button class="result-button btn-disease" data-bs-toggle="modal" data-bs-target="#diseaseModal">
-                    <i class="fas fa-virus"></i> Disease
-                </button>
-                <button class="result-button btn-description" data-bs-toggle="modal" data-bs-target="#descriptionModal">
-                    <i class="fas fa-info-circle"></i> Description
-                </button>
-                <button class="result-button btn-precaution" data-bs-toggle="modal" data-bs-target="#precautionModal">
-                    <i class="fas fa-shield-alt"></i> Precaution
-                </button>
-                <button class="result-button btn-medications" data-bs-toggle="modal" data-bs-target="#medicationsModal">
-                    <i class="fas fa-pills"></i> Medications
-                </button>
-                <button class="result-button btn-workouts" data-bs-toggle="modal" data-bs-target="#workoutsModal">
-                    <i class="fas fa-running"></i> Workouts
-                </button>
-                <button class="result-button btn-diets" data-bs-toggle="modal" data-bs-target="#dietsModal">
-                    <i class="fas fa-apple-alt"></i> Diets
-                </button>
-            </div>
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- Disease Modal -->
-    <div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="diseaseModalLabel"><i class="fas fa-virus me-2"></i>Predicted Disease</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <strong>{{ predicted_disease }}</strong>
-                    </div>
-                    <p class="text-muted">This is an AI-generated prediction based on the symptoms you provided. Please consult with a healthcare professional for proper diagnosis.</p>
-                </div>
-            </div>
-        </div>
+{% if predicted_disease %}
+<!-- Modals (IDs preserved for compatibility) -->
+<div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="diseaseModalLabel"><i class="fas fa-virus me-2" aria-hidden="true"></i>Predicted Disease</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning mb-2"><strong>{{ predicted_disease }}</strong></div>
+        <p class="text-muted mb-0">AI-generated prediction. Consult a healthcare professional for proper diagnosis.</p>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- Description Modal -->
-    <div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="descriptionModalLabel"><i class="fas fa-info-circle me-2"></i>Description</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>{{ dis_des }}</p>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="descriptionModalLabel"><i class="fas fa-circle-info me-2" aria-hidden="true"></i>Description</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"><p class="mb-0">{{ dis_des }}</p></div>
     </div>
+  </div>
+</div>
 
-    <!-- Precaution Modal -->
-    <div class="modal fade" id="precautionModal" tabindex="-1" aria-labelledby="precautionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="precautionModalLabel"><i class="fas fa-shield-alt me-2"></i>Precautions</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="precaution-list">
-                        {% for i in my_precautions %}
-                            <li>{{ i }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="precautionModal" tabindex="-1" aria-labelledby="precautionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="precautionModalLabel"><i class="fas fa-shield-halved me-2" aria-hidden="true"></i>Precautions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul>{% for i in my_precautions %}<li>{{ i }}</li>{% endfor %}</ul>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- Medications Modal -->
-    <div class="modal fade" id="medicationsModal" tabindex="-1" aria-labelledby="medicationsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="medicationsModalLabel"><i class="fas fa-pills me-2"></i>Recommended Medications</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="medications-list">
-                        {% for i in medications %}
-                            <li>{{ i }}</li>
-                        {% endfor %}
-                    </ul>
-                    <div class="alert alert-info mt-3">
-                        <small><i class="fas fa-exclamation-circle me-2"></i>Always consult with a healthcare professional before taking any medication.</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="medicationsModal" tabindex="-1" aria-labelledby="medicationsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="medicationsModalLabel"><i class="fas fa-pills me-2" aria-hidden="true"></i>Recommended Medications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul>{% for i in medications %}<li>{{ i }}</li>{% endfor %}</ul>
+        <div class="alert alert-info mt-3 mb-0"><small><i class="fas fa-circle-exclamation me-2" aria-hidden="true"></i>Always consult a healthcare professional before taking any medication.</small></div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- Workouts Modal -->
-    <div class="modal fade" id="workoutsModal" tabindex="-1" aria-labelledby="workoutsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="workoutsModalLabel"><i class="fas fa-running me-2"></i>Recommended Workouts</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="workout-list">
-                        {% for i in workout %}
-                            <li>{{ i }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="workoutsModal" tabindex="-1" aria-labelledby="workoutsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="workoutsModalLabel"><i class="fas fa-person-running me-2" aria-hidden="true"></i>Recommended Workouts</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"><ul>{% for i in workout %}<li>{{ i }}</li>{% endfor %}</ul></div>
     </div>
+  </div>
+</div>
 
-    <!-- Diets Modal -->
-    <div class="modal fade" id="dietsModal" tabindex="-1" aria-labelledby="dietsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dietsModalLabel"><i class="fas fa-apple-alt me-2"></i>Recommended Diet</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="diet-list">
-                        {% for i in my_diet %}
-                            <li>{{ i }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="dietsModal" tabindex="-1" aria-labelledby="dietsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dietsModalLabel"><i class="fas fa-apple-whole me-2" aria-hidden="true"></i>Recommended Diet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"><ul>{% for i in my_diet %}<li>{{ i }}</li>{% endfor %}</ul></div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>© 2026 3rd year Thesis | AI-Powered Medical Recommendations</p>
-            <p><small>This system is for informational purposes only and is not a substitute for professional medical advice.</small></p>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script>
-        const startSpeechRecognitionButton = document.getElementById('startSpeechRecognition');
-        const transcriptionDiv = document.getElementById('transcription');
-        const symptomsInput = document.getElementById('symptoms');
-
-        startSpeechRecognitionButton.addEventListener('click', startSpeechRecognition);
-
-        function startSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window)) {
-                alert('Speech recognition is not supported in your browser. Please try Chrome.');
-                return;
-            }
-            
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            
-            // Change button appearance
-            startSpeechRecognitionButton.innerHTML = '<i class="fas fa-microphone-alt"></i> Listening...';
-            startSpeechRecognitionButton.classList.add('btn-danger');
-            
-            recognition.onresult = function (event) {
-                const result = event.results[0][0].transcript;
-                transcriptionDiv.textContent = result;
-                symptomsInput.value = result;
-            };
-
-            recognition.onend = function () {
-                console.log('Speech recognition ended.');
-                startSpeechRecognitionButton.innerHTML = '<i class="fas fa-microphone"></i> Speak Your Symptoms';
-                startSpeechRecognitionButton.classList.remove('btn-danger');
-            };
-
-            recognition.onerror = function(event) {
-                console.error('Speech recognition error', event.error);
-                startSpeechRecognitionButton.innerHTML = '<i class="fas fa-microphone"></i> Speak Your Symptoms';
-                startSpeechRecognitionButton.classList.remove('btn-danger');
-                transcriptionDiv.textContent = 'Error: ' + event.error;
-            };
-
-            recognition.start();
-        }
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-</body>
-</html>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -122,7 +122,7 @@ def health():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", symptoms_list=sorted(symptoms_dict.keys()))
 
 
 @app.route("/predict", methods=["GET", "POST"])
@@ -131,7 +131,12 @@ def home():
         symptoms = request.form.get("symptoms", "")
         if not symptoms or symptoms.strip() == "" or symptoms == "Symptoms":
             message = "Please either write symptoms or you have written misspelled symptoms"
-            return render_template("index.html", message=message)
+            return render_template(
+                "index.html",
+                message=message,
+                symptoms_list=sorted(symptoms_dict.keys()),
+                user_input=symptoms or "",
+            )
 
         # Split comma-separated input
         user_symptoms = [s.strip() for s in symptoms.split(",") if s.strip()]
@@ -139,7 +144,12 @@ def home():
 
         if not user_symptoms:
             message = "Please enter at least one symptom."
-            return render_template("index.html", message=message)
+            return render_template(
+                "index.html",
+                message=message,
+                symptoms_list=sorted(symptoms_dict.keys()),
+                user_input=symptoms,
+            )
 
         predicted_disease, confidence, unknown = get_predicted_value(user_symptoms)
         if predicted_disease is None:
@@ -148,7 +158,12 @@ def home():
                 "Please use symptoms from the list (e.g. itching, cough, high_fever). "
                 f"Unrecognized: {', '.join(unknown)}"
             )
-            return render_template("index.html", message=message)
+            return render_template(
+                "index.html",
+                message=message,
+                symptoms_list=sorted(symptoms_dict.keys()),
+                user_input=symptoms,
+            )
 
         severity_score = calculate_severity_score(user_symptoms)
         dis_des, my_precautions, medications_list, rec_diet, workout_plan = helper(predicted_disease)
@@ -168,9 +183,11 @@ def home():
             my_diet=rec_diet,
             workout=workout_plan,
             message=extra_message or None,
+            symptoms_list=sorted(symptoms_dict.keys()),
+            user_input=symptoms,
         )
 
-    return render_template("index.html")
+    return render_template("index.html", symptoms_list=sorted(symptoms_dict.keys()))
 
 
 @app.route("/about")

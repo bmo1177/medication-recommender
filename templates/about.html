@@ -1,78 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About - Health Center</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}About | Health Center{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold">About Us</h2>
+    <p class="lead text-muted">Empowering health decisions through AI and simplicity.</p>
+  </div>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        <img class="logo-img" src="{{ url_for('static', filename='img.png') }}" alt="Health Center Logo" style="width: 80px; height: 80px;">
-        Health Center
-      </a>
-      
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="/developer">Developer</a></li>
-          <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
-        </ul>
-      </div>
+  <div class="info-grid">
+    <div class="info-tile">
+      <h4><i class="fas fa-bullseye me-2" aria-hidden="true"></i>Our Mission</h4>
+      <p class="mb-0">To simplify healthcare access by using AI to provide accurate symptom-based drug recommendations, while educating users on wellness and prevention.</p>
     </div>
-  </nav>
-
-  <!-- About Section -->
-  <div class="container py-5">
-    <div class="text-center mb-5">
-      <h2 class="fw-bold text-primary">About Us</h2>
-      <p class="lead text-muted">Empowering health decisions through AI and simplicity.</p>
+    <div class="info-tile">
+      <h4><i class="fas fa-eye me-2" aria-hidden="true"></i>Our Vision</h4>
+      <p class="mb-0">We aim to make health knowledge a basic right — accessible, understandable, and actionable for everyone, everywhere.</p>
     </div>
-
-    <div class="row gy-4">
-      <div class="col-md-6">
-        <h4 class="text-secondary">Our Mission</h4>
-        <p>To simplify healthcare access by using AI to provide accurate symptom-based drug recommendations, while educating users on wellness and prevention.</p>
-      </div>
-
-      <div class="col-md-6">
-        <h4 class="text-secondary">Our Vision</h4>
-        <p>We aim to make health knowledge a basic right—accessible, understandable, and actionable for everyone, everywhere.</p>
-      </div>
-
-      <div class="col-md-6">
-        <h4 class="text-secondary">Who We Are</h4>
-        <p>A small team of healthcare professionals, developers, and designers committed to using technology to improve health outcomes.</p>
-      </div>
-
-      <div class="col-md-6">
-        <h4 class="text-secondary">How It Works</h4>
-        <p>Our machine learning system analyzes symptoms and predicts potential conditions, helping guide users toward appropriate medications and health steps.</p>
-      </div>
+    <div class="info-tile">
+      <h4><i class="fas fa-users me-2" aria-hidden="true"></i>Who We Are</h4>
+      <p class="mb-0">A small team of healthcare professionals, developers, and designers committed to using technology to improve health outcomes.</p>
     </div>
-
-    <div class="mt-5 text-center text-muted small">
-      <p>This platform is a student project demo. Always consult a healthcare provider for medical decisions.</p>
+    <div class="info-tile">
+      <h4><i class="fas fa-gears me-2" aria-hidden="true"></i>How It Works</h4>
+      <p class="mb-0">Our machine learning system analyzes symptoms and predicts potential conditions, helping guide users toward appropriate medications and health steps — for education, not diagnosis.</p>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2026 Health Center. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+  <p class="text-center text-muted small mt-4 mb-0">Student project demo. Always consult a healthcare provider for medical decisions.</p>
+</div>
+{% endblock %}

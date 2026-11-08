@@ -1,97 +1,23 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact Us</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-    crossorigin="anonymous"
-  />
-  <style>
-    body {
-      background-color: #f9fafb;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #444;
-    }
-    .container {
-      max-width: 700px;
-      margin-top: 3rem;
-      background: #fff;
-      padding: 2rem 2.5rem;
-      border-radius: 12px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-    }
-    h4 {
-      color: #1f2937;
-      margin-top: 1.5rem;
-      font-weight: 600;
-    }
-    p {
-      font-size: 1.05rem;
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-    .email {
-      font-weight: 700;
-      color: #2563eb;
-    }
-  </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img class="logo-img" src="{{ url_for('static', filename='img.png') }}" alt="Health Center Logo" style="width: 80px; height: 80px;">
-          Health Center
-        </a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            <li class="nav-item"><a class="nav-link active" href="/about">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-            <li class="nav-item"><a class="nav-link" href="/developer">Developer</a></li>
-            <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+{% extends "base.html" %}
+{% block title %}Contact | Health Center{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 700px;">
+  <div class="page-card">
+    <h2 class="h4">Contact Us</h2>
+    <p class="text-muted">Have questions or need assistance? We are here to help.</p>
 
-  <div class="container">
-    <h4>Contact Us</h4>
-    <p>Have questions or need assistance? We're here to help!</p>
+    <h3 class="h6 mt-4">Support</h3>
+    <p>Our team can help with technical questions, feedback or general inquiries — send us a message and we will get back to you.</p>
 
-    <h4>Support</h4>
-    <p>
-      Our dedicated team is available to assist you with any inquiries or issues you may have. Whether it's a technical question, feedback, or a general inquiry, we're just a message away.
-    </p>
-
-    <h4>Get in Touch</h4>
-    <p>
-      Feel free to reach out to us via email. We value your feedback and are committed to providing you with the best possible experience.
-    </p>
+    <h3 class="h6 mt-4">Get in Touch</h3>
+    <p>Feel free to reach out by email. We value feedback and aim for the best possible experience.</p>
     <p><span class="email">Email: marigold412@gmail.com</span></p>
 
-    <h4>Stay Connected</h4>
-    <p>
-      Stay up-to-date with the latest news, updates, and health tips by following us on social media. Join our growing community.
-    </p>
+    <h3 class="h6 mt-4">Stay Connected</h3>
+    <p>Follow us for news, updates and health tips. Join our growing community.</p>
 
-    <h4>Location</h4>
-    <p>MO, fmi Tiaret</p>
+    <h3 class="h6 mt-4">Location</h3>
+    <p class="mb-0">MO, FMI Tiaret</p>
   </div>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-    crossorigin="anonymous"
-  ></script>
-</body>
-</html>
+</div>
+{% endblock %}
