@@ -336,6 +336,56 @@ def create_app(config: Optional[Config] = None, kb: Optional[DiseaseKnowledgeBas
             user_input=raw,
         )
 
+    @app.route("/api/symptoms", methods=["GET"])
+    def api_symptoms():
+        return jsonify(count=len(symptom_names_sorted), symptoms=symptom_names_sorted)
+
+    @app.route("/api/predict", methods=["POST"])
+    def api_predict():
+        payload = request.get_json(silent=True)
+        if payload is None:
+            return jsonify(error="JSON body required: {\"symptoms\": \"itching, cough\"}"), 400
+
+        raw_in = payload.get("symptoms")
+        if isinstance(raw_in, str):
+            raw_str = raw_in
+            user_symptoms = [s.strip().strip("[]' ") for s in raw_in.split(",") if s.strip()]
+        elif isinstance(raw_in, list):
+            if not all(isinstance(s, str) for s in raw_in):
+                return jsonify(error="symptoms list must contain only strings"), 400
+            raw_str = ", ".join(raw_in)
+            user_symptoms = [s.strip().strip("[]' ") for s in raw_in if s.strip()]
+        else:
+            return jsonify(error="symptoms must be a comma-separated string or list of strings"), 400
+
+        if not user_symptoms:
+            return jsonify(error="Please enter at least one symptom."), 400
+        if len(user_symptoms) > cfg.max_symptoms:
+            return jsonify(error=f"Please enter at most {cfg.max_symptoms} symptoms."), 400
+        if len(raw_str) > cfg.max_input_len:
+            return jsonify(error=f"Input too long (max {cfg.max_input_len} characters)."), 400
+
+        disease, confidence, unknown = predictor.predict(user_symptoms)
+        if disease is None:
+            return jsonify(
+                error="None of those symptoms were recognized. Use symptoms from /api/symptoms.",
+                unknown=unknown,
+            ), 422
+
+        dis_des, my_precautions, medications_list, rec_diet, workout_plan = kb.details(disease)
+        return jsonify(
+            predicted_disease=disease,
+            confidence=confidence,
+            severity_score=kb.severity_score(user_symptoms),
+            recognized=[s for s in user_symptoms if s.strip() not in unknown],
+            unknown=unknown,
+            description=dis_des,
+            precautions=my_precautions,
+            medications=medications_list,
+            diet=rec_diet,
+            workouts=workout_plan,
+        )
+
     @app.route("/about")
     def about():
         return render_template("about.html")

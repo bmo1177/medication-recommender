@@ -245,9 +245,19 @@ medication-recommender/
 | Method | Path | Description |
 |---|---|---|
 | `GET` | `/` | Symptom form (index) |
-| `POST` | `/predict` | Predict disease from `symptoms` form field (comma-separated) |
-| `GET` | `/health` | `{"status":"ok","symptoms":132,"diseases":41}` |
+| `POST` | `/predict` | Predict from `symptoms` form field (comma-separated, HTML) |
+| `GET` | `/health` | `{"status":"ok","symptoms":132,"diseases":41,"model":"SVC"}` |
+| `GET` | `/api/symptoms` | JSON list of 132 valid symptoms |
+| `POST` | `/api/predict` | JSON `{"symptoms": [...] or "..."}` → `{predicted_disease, confidence, severity_score, description, precautions, medications, diet, workouts}`; `400` bad input / `422` unknown-only |
 | `GET` | `/about` `/contact` `/developer` `/blog` | Static pages |
+
+**API example:**
+
+```bash
+curl -s -X POST http://127.0.0.1:5000/api/predict \
+  -H 'Content-Type: application/json' \
+  -d '{"symptoms":["fatigue","weight_loss","restlessness","lethargy"]}'
+```
 
 ---
 
