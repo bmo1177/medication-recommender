@@ -91,7 +91,7 @@
             <p class="text-muted mb-0">This is an AI-generated prediction from the symptoms you provided. Please consult a healthcare professional for a proper diagnosis.</p>
             <div class="result-metrics">
               <div class="metric"><small>Severity score</small><strong>{{ severity_score }}</strong></div>
-              <div class="metric"><small>Model confidence</small><strong>{{ (confidence * 100)|int if confidence is defined else '—' }}%</strong><small class="text-normal">SVC fixed — retrain for probabilities</small></div>
+              <div class="metric"><small>Model confidence</small><strong>{{ (confidence * 100)|int if confidence is defined else '—' }}%</strong><small class="text-normal">Platt-calibrated — add more symptoms for certainty</small></div>
               <div class="metric"><small>Recognized symptoms</small><strong>{{ user_input.split(',')|length if user_input else '—' }}</strong><small class="text-normal">from your input</small></div>
             </div>
           </div>

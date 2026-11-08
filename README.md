@@ -224,7 +224,8 @@ medication-recommender/
 │   ├── workout_df.csv
 │   └── Symptom-severity.csv
 ├── models/
-│   └── svc.pkl                 # Trained SVC (sklearn 1.3.2)
+│   ├── svc.pkl                   # Trained SVC, probability=True (sklearn 1.3.2)
+│   └── metadata.json             # Training metadata (features, classes, metrics)
 ├── templates/                  # Flask templates (runtime)
 │   ├── index.html              # Symptom form + results modal
 │   ├── about.html
@@ -328,16 +329,17 @@ Five candidates were trained and scored with `accuracy_score` + `confusion_matri
 | KNeighbors | `KNeighborsClassifier(n_neighbors=5)` | (see notebook) |
 | MultinomialNB | `MultinomialNB()` | (see notebook) |
 
-The linear **SVC** was selected (simplest perfect scorer) and refit:
+The linear **SVC** was selected (simplest perfect scorer). Deployed artifact is now `SVC(kernel="linear", probability=True, random_state=42)` — **real Platt-calibrated probabilities** — produced by [`train.py`](./train.py) (holdout accuracy 1.0, log-loss 0.24, refit on full 4920 rows, `models/metadata.json` records classes/features/version):
 
 ```python
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 import pickle
 
-svc = SVC(kernel="linear")
+svc = SVC(kernel="linear", probability=True, random_state=42)
 svc.fit(X_train, y_train)
 accuracy_score(y_test, svc.predict(X_test))    # 1.0 on the 30% holdout
+svc.fit(X, Y)                                   # refit on full data
 pickle.dump(svc, open("svc.pkl", "wb"))        # -> models/svc.pkl
 ```
 
@@ -360,7 +362,7 @@ raw input "itching, cough, high_fever"
 ### 5. Limitations & what "1.0 accuracy" really means
 
 - **Synthetic data:** 1.0 on a holdout means the 132 patterns separate cleanly — it does **not** imply clinical accuracy. Real-world symptoms overlap and require clinician judgment.
-- **Uncalibrated:** `SVC(kernel="linear", probability=False)` returns no probabilities → the UI reports a fixed 100%. Use `SVC(probability=True)` or `CalibratedClassifierCV` for real confidence.
+- **Sparse-input uncertainty:** with few symptoms the 41-way posterior is naturally diffuse (even at 1.0 holdout accuracy) — the UI shows Platt probability with "add more symptoms for certainty" rather than a fixed 100%.
 - **No drift / validation:** single 70/30 split, no cross-validation, no patient-level split.
 - **Pickle trust:** only load pickles you trained yourself.
 
@@ -416,7 +418,7 @@ Please try to keep changes focused and update `README.md` when behavior changes.
 - [x] Severity scoring from weights file
 - [x] Docker + Railway + Render + GitHub Actions CI
 - [ ] `POST /api/predict` JSON endpoint (currently form-only)
-- [ ] Confidence via `probability=True` retraining
+- [x] Real confidence via `probability=True` (`train.py` + `models/metadata.json`)
 - [ ] Unit tests (`pytest` for `helper` + routes)
 - [ ] Frontend polish (loading states, error toasts, mobile layout)
 
