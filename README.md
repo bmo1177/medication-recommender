@@ -31,6 +31,7 @@
 - [📁 Project Structure](#-project-structure)
 - [🔌 Endpoints](#-endpoints)
 - [📊 Datasets & Model](#-datasets--model)
+- [🧠 Model Training](#-model-training)
 - [🧪 Testing](#-testing)
 - [🤝 Contributing](#-contributing)
 - [🗺️ Roadmap](#️-roadmap)
@@ -260,6 +261,109 @@ medication-recommender/
 \*Row counts from the committed files; training notebook rebuilds `models/svc.pkl`.
 
 > ⚠️ `models/svc.pkl` is loaded with `pickle`. It is **trusted-only** — never load a pickle from an untrusted source. The version-matched `scikit-learn==1.3.2` pin (see `requirements.txt`) avoids pickle version warnings.
+
+---
+
+## 🧠 Model Training
+
+Full pipeline lives in **[`Medicine Recommendation System.ipynb`](./Medicine%20Recommendation%20System.ipynb)** (single source of truth — this section documents it).
+
+### 1. Dataset
+
+| Property | Value |
+|---|---|
+| File | `datasets/Training.csv` |
+| Shape | **(4920, 133)** → 132 symptom columns + `prognosis` target |
+| Features | 132 binary (0/1) symptoms (e.g. `itching`, `skin_rash`, `chills`, `high_fever` …) |
+| Target | 41 diseases (`Fungal infection`, `Allergy`, `GERD`, `Diabetes`, …) |
+| Type | Synthetic / curated symptom patterns (not EHR data) |
+
+### 2. Preprocessing
+
+```python
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+dataset = pd.read_csv("Training.csv")          # (4920, 133)
+X = dataset.drop("prognosis", axis=1)          # 132 binary symptoms
+y = dataset["prognosis"]
+
+le = LabelEncoder()                            # disease name -> int 0..40
+Y = le.fit_transform(y)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, Y, test_size=0.3, random_state=20       # 70/30 split, reproducible
+)
+```
+
+- **No imputation / scaling** — features are already clean 0/1 indicators.
+- **Label encoding** maps 41 string diagnoses to ints for the classifier; `main.py` mirrors this with `diseases_list` / `symptoms_dict`.
+
+### 3. Models compared
+
+Five candidates were trained and scored with `accuracy_score` + `confusion_matrix`:
+
+| Model | Config | Notebook result |
+|---|---|---|
+| **SVC** | `SVC(kernel="linear")` | **1.0** accuracy |
+| RandomForest | `RandomForestClassifier(n_estimators=100, random_state=42)` | **1.0** accuracy |
+| GradientBoosting | `GradientBoostingClassifier(n_estimators=100, random_state=42)` | (see notebook) |
+| KNeighbors | `KNeighborsClassifier(n_neighbors=5)` | (see notebook) |
+| MultinomialNB | `MultinomialNB()` | (see notebook) |
+
+The linear **SVC** was selected (simplest perfect scorer) and refit:
+
+```python
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+import pickle
+
+svc = SVC(kernel="linear")
+svc.fit(X_train, y_train)
+accuracy_score(y_test, svc.predict(X_test))    # 1.0 on the 30% holdout
+pickle.dump(svc, open("svc.pkl", "wb"))        # -> models/svc.pkl
+```
+
+Environment verified in the notebook: **`scikit-learn 1.3.2`** — hence the exact pin in `requirements.txt` (avoid pickle version warnings).
+
+### 4. Inference (what `main.py` does)
+
+```text
+raw input "itching, cough, high_fever"
+  -> normalize (lower, _-separated, dedupe)
+  -> binary vector len 132
+  -> ModelPredictor.predict() -> disease label
+  -> DiseaseKnowledgeBase.details(disease) -> O(1) dict lookup
+       description + precautions + medications + diet + workouts
+  -> + severity score = Σ weight(symptom) from Symptom-severity.csv
+```
+
+`ModelPredictor` wraps **any** sklearn classifier with `.predict()` (and `.predict_proba()` if present), so swapping a retrained SVC / Random Forest / calibrated model needs no route changes — just replace `models/svc.pkl` and keep `scikit-learn` pinned to the training version.
+
+### 5. Limitations & what "1.0 accuracy" really means
+
+- **Synthetic data:** 1.0 on a holdout means the 132 patterns separate cleanly — it does **not** imply clinical accuracy. Real-world symptoms overlap and require clinician judgment.
+- **Uncalibrated:** `SVC(kernel="linear", probability=False)` returns no probabilities → the UI reports a fixed 100%. Use `SVC(probability=True)` or `CalibratedClassifierCV` for real confidence.
+- **No drift / validation:** single 70/30 split, no cross-validation, no patient-level split.
+- **Pickle trust:** only load pickles you trained yourself.
+
+### 6. Retrain smoke test
+
+```bash
+.venv/bin/python -c "
+import pandas as pd, pickle
+df = pd.read_csv('datasets/Training.csv')
+print(df.shape)
+import sklearn; print('sklearn', sklearn.__version__)
+"
+```
+
+To retrain end-to-end, open the notebook top-to-bottom (run Cells 3–15), then verify:
+
+```bash
+.venv/bin/python -c "from main import app; print(app.test_client().get('/health').json)"
+```
 
 ---
 
