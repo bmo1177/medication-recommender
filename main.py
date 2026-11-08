@@ -41,6 +41,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
+from flask_wtf import CSRFProtect
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("medication-recommender")
@@ -62,6 +63,7 @@ class Config:
     debug: bool = os.getenv("DEBUG", "false").lower() == "true"
     port: int = int(os.getenv("PORT", "5000"))
     host: str = os.getenv("HOST", "0.0.0.0")
+    secret_key: str = os.getenv("SECRET_KEY", "dev-only-insecure-key-change-in-production")
 
 
 # ------------------------------------------------------------------
@@ -250,6 +252,26 @@ def create_app(config: Optional[Config] = None, kb: Optional[DiseaseKnowledgeBas
     app.config["KB"] = kb
     app.config["PREDICTOR"] = predictor
     app.config["MAX_CONTENT_LENGTH"] = 64 * 1024  # 64 KB guard
+    app.config["SECRET_KEY"] = cfg.secret_key
+
+    csrf = CSRFProtect(app)
+    csrf.exempt("api_predict")  # JSON API: no cookie form CSRF surface same as HTML
+
+    @app.after_request
+    def _security_headers(resp):
+        resp.headers["X-Content-Type-Options"] = "nosniff"
+        resp.headers["X-Frame-Options"] = "SAMEORIGIN"
+        resp.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        resp.headers["Permissions-Policy"] = "microphone=(self), camera=(), geolocation=()"
+        resp.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
+            "font-src 'self' https://fonts.gstatic.com data:; "
+            "img-src 'self' data: https://*; "
+            "connect-src 'self'; frame-ancestors 'self'"
+        )
+        return resp
 
     @app.errorhandler(413)
     def _too_large(_e):

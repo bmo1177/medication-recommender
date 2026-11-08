@@ -30,6 +30,7 @@
         {% endif %}
 
         <form id="predict-form" action="/predict" method="post" novalidate aria-describedby="symptoms-help symptoms-error">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <div class="mb-3">
             <label for="symptoms" class="form-label">What symptoms are you experiencing?</label>
             <div class="field-row">
